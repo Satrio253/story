@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Writing Space</title>
+<style>
+body{
+    background:#0f1117;
+    color:#e6edf3;
+    font-family:Arial, sans-serif;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+input, textarea{
+    width:100%;
+    background:#161b22;
+    color:#e6edf3;
+    border:1px solid #30363d;
+    border-radius:8px;
+    padding:10px;
+    font-size:16px;
+    margin-top:10px;
+}
+
+textarea{
+    min-height:400px;
+    resize:vertical;
+}
+
+button{
+    background:#238636;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2ea043;
+}
+
+.small{
+    opacity:0.7;
+    font-size:12px;
+    margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h2>My Writing Space</h2>
+
+<label>Title</label>
+<input id="title" placeholder="Story title...">
+
+<label>Story</label>
+<textarea id="story" placeholder="Start writing here..."></textarea>
+
+<br>
+<button onclick="saveLocal()">Save (Local)</button>
+<button onclick="loadLocal()">Load (Local)</button>
+
+<div class="small">
+Local save works on this device. GitHub sync will be added next.
+</div>
+
+</div>
+
+<script>
+function saveLocal(){
+    const data = {
+        title: document.getElementById("title").value,
+        story: document.getElementById("story").value
+    };
+    localStorage.setItem("writingData", JSON.stringify(data));
+    alert("Saved locally!");
+}
+
+function loadLocal(){
+    const data = JSON.parse(localStorage.getItem("writingData") || "{}");
+    document.getElementById("title").value = data.title || "";
+    document.getElementById("story").value = data.story || "";
+}
+</script>
+
+</body>
+</html>

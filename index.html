@@ -17,7 +17,7 @@ body{
     margin:auto;
 }
 
-input, textarea{
+input, textarea, select{
     width:100%;
     background:#161b22;
     color:#e6edf3;
@@ -60,37 +60,82 @@ button:hover{
 
 <h2>My Writing Space</h2>
 
+<label>Story</label>
+<select id="storySelect"></select>
+<button onclick="newStory()">New Story</button>
+
 <label>Title</label>
 <input id="title" placeholder="Story title...">
 
-<label>Story</label>
+<label>Content</label>
 <textarea id="story" placeholder="Start writing here..."></textarea>
 
 <br>
-<button onclick="saveLocal()">Save (Local)</button>
-<button onclick="loadLocal()">Load (Local)</button>
+<button onclick="saveStory()">Save</button>
+<button onclick="loadStory()">Load</button>
 
 <div class="small">
-Local save works on this device. GitHub sync will be added next.
+Stories are saved locally on this device.
 </div>
 
 </div>
 
 <script>
-function saveLocal(){
-    const data = {
-        title: document.getElementById("title").value,
-        story: document.getElementById("story").value
-    };
-    localStorage.setItem("writingData", JSON.stringify(data));
-    alert("Saved locally!");
+
+let stories = JSON.parse(localStorage.getItem("stories") || "{}");
+
+function updateDropdown(){
+    const select = document.getElementById("storySelect");
+    select.innerHTML = "";
+
+    for(const name in stories){
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+    }
 }
 
-function loadLocal(){
-    const data = JSON.parse(localStorage.getItem("writingData") || "{}");
-    document.getElementById("title").value = data.title || "";
-    document.getElementById("story").value = data.story || "";
+function newStory(){
+    const name = prompt("Enter story name:");
+    if(!name) return;
+
+    stories[name] = { title:"", content:"" };
+    localStorage.setItem("stories", JSON.stringify(stories));
+
+    updateDropdown();
+    document.getElementById("storySelect").value = name;
+    loadStory();
 }
+
+function saveStory(){
+    const name = document.getElementById("storySelect").value;
+    if(!name){
+        alert("Create or select a story first.");
+        return;
+    }
+
+    stories[name] = {
+        title: document.getElementById("title").value,
+        content: document.getElementById("story").value
+    };
+
+    localStorage.setItem("stories", JSON.stringify(stories));
+    alert("Saved!");
+}
+
+function loadStory(){
+    const name = document.getElementById("storySelect").value;
+    if(!name) return;
+
+    const data = stories[name] || {};
+
+    document.getElementById("title").value = data.title || "";
+    document.getElementById("story").value = data.content || "";
+}
+
+updateDropdown();
+
 </script>
 
 </body>
